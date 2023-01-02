@@ -1,0 +1,14 @@
+.card {
+    margin: auto;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 10, 0.4);
+    max-width: 500px;
+    border-radius: 6px;
+    transition: 0.3s;
+    margin-top: 5em;
+}
+
+.user-form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
