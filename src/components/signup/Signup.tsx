@@ -66,7 +66,7 @@ export default function SignUp() {
           value={phone}
           onChange={handlePhoneChange}
         />
-        <input type="submit" disabled={!isValid}></input>
+        <input className="register-btn" type="submit" name="Register" disabled={!isValid}></input>
       </form>
     </div>
   );

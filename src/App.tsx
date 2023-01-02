@@ -1,4 +1,4 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 
 import Login from "./components/login/Login";
 import SignUp from "./components/signup/Signup";
@@ -17,9 +17,7 @@ function App() {
       <div className="card">
         {showLoginPage ? <Login></Login> : <SignUp></SignUp>}
         <div className="btn-group">
-          <button className="register-btn">
-            {showLoginPage ? "Log In" : "Proceed"}
-          </button>
+          {showLoginPage ? <button className="register-btn">Login</button> : null}
           <button className="register-btn" onClick={handleRegisterButton}>
             {showLoginPage ? "Register" : "Back to login"}
           </button>
