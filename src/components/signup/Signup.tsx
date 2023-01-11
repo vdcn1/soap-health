@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import InputMask from "react-input-mask";
-import { useForm } from "react-hook-form";
+import {
+  Controller,
+  FieldValues,
+  SubmitHandler,
+  useForm,
+} from "react-hook-form";
 import "../common-styles/card.scss";
+import * as Yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 interface FormValues {
   firstName: string;
@@ -9,25 +16,41 @@ interface FormValues {
   email: string;
   phone: string;
 }
+
 export default function SignUp() {
-  const phoneRegExp: RegExp = new RegExp("[0-9]");
+  const phoneRegExp: RegExp = new RegExp("[_]");
   const [phone, setPhone] = useState("");
-  
+  const [isValidPhone, setIsValidPhone] = useState(false);
+  const schema = Yup.object().shape({
+    firstName: Yup.string().required("Required"),
+    lastName: Yup.string().required("Required"),
+    email: Yup.string().required().email("E-mail must be valid!"),
+    phone: Yup.string().required(),
+  });
+
   const {
     register,
     handleSubmit,
+    control,
+    trigger,
     formState: { errors, isValid },
-  } = useForm<FormValues>();
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
 
   const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhone(event.target.value);
+    setIsValidPhone(!phoneRegExp.test(event.target.value));
   };
 
-  const onSubmit = (data: FormValues) => {
+  const handleEmailChange = async () => {
+    await trigger("email");
+    // console.log(valid);
+  };
+
+  const onSubmit = (data: FieldValues) => {
     console.log(data);
   };
-
-  const emailRegExp: RegExp = new RegExp(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/);
 
   return (
     <div>
@@ -45,19 +68,31 @@ export default function SignUp() {
           })}
           placeholder="Last Name"
         />
-        <input
-          {...register("email", {
-            pattern: emailRegExp,
-            required: true,
-          })}
-          placeholder="E-mail"
+        <Controller
+          name="email"
+          control={control}
+          defaultValue=""
+          render={({ field: { value, onChange, ...field } }) => (
+            <input
+              // {...register("email", {
+              //   pattern: {
+              //     value: emailRegExp,
+              //     message: "Please, enter a valid e-mail"
+              //   },
+              //   required: true,
+              // })}
+              {...field}
+              onChange={({ target: { value } }) => {
+                onChange(value);
+                handleEmailChange();
+              }}
+              placeholder="E-mail"
+            />
+          )}
         />
-        {errors.email && errors.email.type === "pattern" && (
-          <span>Invalid e-mail</span>
-        )}
+        {errors.email && <span>Invalid e-mail</span>}
         <InputMask
           {...register("phone", {
-            pattern: phoneRegExp,
             required: true,
           })}
           mask="(99) 99999-9999"
@@ -66,7 +101,13 @@ export default function SignUp() {
           value={phone}
           onChange={handlePhoneChange}
         />
-        <input className="register-btn" type="submit" name="Register" disabled={!isValid}></input>
+        {!isValidPhone && <span>Invalid phone</span>}
+        <input
+          className="register-btn"
+          type="submit"
+          name="Register"
+          disabled={!isValid}
+        ></input>
       </form>
     </div>
   );

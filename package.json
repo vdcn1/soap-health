@@ -44,6 +44,8 @@
     ]
   },
   "devDependencies": {
-    "react-hook-form": "^7.41.3"
+    "@hookform/resolvers": "^2.9.10",
+    "react-hook-form": "^7.41.3",
+    "yup": "^0.32.11"
   }
 }
