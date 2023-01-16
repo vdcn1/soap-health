@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-
+import { useState } from "react";
 import Login from "./components/login/Login";
 import SignUp from "./components/signup/Signup";
+import { Button, Grid } from "semantic-ui-react";
 
+import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 
 function App() {
@@ -12,17 +13,18 @@ function App() {
     setShowLoginPage(!showLoginPage);
   };
   return (
-    <div className="App">
-      <h1>SOAP HEALTH</h1>
-      <div className="card">
-        {showLoginPage ? <Login></Login> : <SignUp></SignUp>}
-        <div className="btn-group">
-          {showLoginPage ? <button className="register-btn">Login</button> : null}
-          <button className="register-btn" onClick={handleRegisterButton}>
-            {showLoginPage ? "Register" : "Back to login"}
-          </button>
-        </div>
-      </div>
+    <div className="card">
+      {showLoginPage ? <Login></Login> : <SignUp></SignUp>}
+      <Grid
+        textAlign="center"
+        style={{ height: "10vh" }}
+        verticalAlign="middle"
+      >
+        <Grid.Column style={{ maxWidth: 450 }}>
+            {showLoginPage ? <Button primary size="large" fluid>Login</Button>: null}
+            {showLoginPage ? <Button secondary size="large" fluid onClick={handleRegisterButton}>Register</Button> : null}
+        </Grid.Column>
+      </Grid>
     </div>
   );
 }

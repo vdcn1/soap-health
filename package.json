@@ -11,11 +11,14 @@
     "@types/react": "^18.0.26",
     "@types/react-dom": "^18.0.10",
     "@types/react-input-mask": "^3.0.2",
+    "@types/yup": "^0.32.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-input-mask": "^3.0.0-alpha.2",
     "react-scripts": "5.0.1",
     "sass": "^1.57.1",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.4",
     "typescript": "^4.9.4",
     "web-vitals": "^2.1.4"
   },
@@ -46,6 +49,7 @@
   "devDependencies": {
     "@hookform/resolvers": "^2.9.10",
     "react-hook-form": "^7.41.3",
+    "rxjs": "^7.8.0",
     "yup": "^0.32.11"
   }
 }

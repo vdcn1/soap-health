@@ -1,52 +1,37 @@
-import React, { useState } from "react";
 import InputMask from "react-input-mask";
+import { Controller, Field, FieldValues, useForm } from "react-hook-form";
 import {
-  Controller,
-  FieldValues,
-  SubmitHandler,
-  useForm,
-} from "react-hook-form";
-import "../common-styles/card.scss";
-import * as Yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
+  Form,
+  Grid,
+  Segment,
+  Header,
+  Image,
+  Container,
+  Button,
+} from "semantic-ui-react";
 
-interface FormValues {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-}
+import "../common-styles/card.scss";
+import soapLogo from "../../SOAP-logo.png";
 
 export default function SignUp() {
-  const phoneRegExp: RegExp = new RegExp("[_]");
-  const [phone, setPhone] = useState("");
-  const [isValidPhone, setIsValidPhone] = useState(false);
-  const schema = Yup.object().shape({
-    firstName: Yup.string().required("Required"),
-    lastName: Yup.string().required("Required"),
-    email: Yup.string().required().email("E-mail must be valid!"),
-    phone: Yup.string().required(),
-  });
+  type FieldValues = {
+    firstName: string;
+    lastName: string;
+    phone: string;
+    email: string;
+  };
+
+  const emailRegExp: RegExp = new RegExp(
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  );
 
   const {
-    register,
     handleSubmit,
     control,
-    trigger,
     formState: { errors, isValid },
-  } = useForm({
-    resolver: yupResolver(schema),
+  } = useForm<FieldValues>({
+    mode: "onChange",
   });
-
-  const handlePhoneChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(event.target.value);
-    setIsValidPhone(!phoneRegExp.test(event.target.value));
-  };
-
-  const handleEmailChange = async () => {
-    await trigger("email");
-    // console.log(valid);
-  };
 
   const onSubmit = (data: FieldValues) => {
     console.log(data);
@@ -54,61 +39,107 @@ export default function SignUp() {
 
   return (
     <div>
-      <form className="user-form" onSubmit={handleSubmit(onSubmit)}>
-        <p className="title">Sign Up</p>
-        <input
-          {...register("firstName", {
-            required: true,
-          })}
-          placeholder="First Name"
-        />
-        <input
-          {...register("lastName", {
-            required: true,
-          })}
-          placeholder="Last Name"
-        />
-        <Controller
-          name="email"
-          control={control}
-          defaultValue=""
-          render={({ field: { value, onChange, ...field } }) => (
-            <input
-              // {...register("email", {
-              //   pattern: {
-              //     value: emailRegExp,
-              //     message: "Please, enter a valid e-mail"
-              //   },
-              //   required: true,
-              // })}
-              {...field}
-              onChange={({ target: { value } }) => {
-                onChange(value);
-                handleEmailChange();
-              }}
-              placeholder="E-mail"
-            />
-          )}
-        />
-        {errors.email && <span>Invalid e-mail</span>}
-        <InputMask
-          {...register("phone", {
-            required: true,
-          })}
-          mask="(99) 99999-9999"
-          type="tel"
-          placeholder="(99) 99999-9999"
-          value={phone}
-          onChange={handlePhoneChange}
-        />
-        {!isValidPhone && <span>Invalid phone</span>}
-        <input
-          className="register-btn"
-          type="submit"
-          name="Register"
-          disabled={!isValid}
-        ></input>
-      </form>
+      <Container>
+        <Grid textAlign="center" verticalAlign="middle">
+          <Grid.Column style={{ maxWidth: 450 }}>
+            <Header as="h2" color="blue" textAlign="center">
+              <Image src={soapLogo} /> Sign up
+            </Header>
+            <Form size="large" onSubmit={handleSubmit(onSubmit)}>
+              <Segment>
+                <Controller
+                  control={control}
+                  name="firstName"
+                  rules={{ required: true }}
+                  render={({ field, formState }) => (
+                    <Form.Input
+                      {...field}
+                      {...formState}
+                      fluid
+                      icon="user"
+                      iconPosition="left"
+                      placeholder="First Name"
+                    />
+                  )}
+                />
+                <Controller
+                  name="lastName"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field, formState }) => (
+                    <Form.Input
+                      {...field}
+                      {...formState}
+                      fluid
+                      icon="user"
+                      iconPosition="left"
+                      type="text"
+                      placeholder="Last Name"
+                    />
+                  )}
+                />
+                <Controller
+                  name="phone"
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field, formState }) => (
+                    <InputMask
+                      mask="(99) 99999-9999"
+                      type="tel"
+                      placeholder="(99) 99999-9999"
+                      {...field}
+                      {...formState}
+                    >
+                      <Form.Input
+                        fluid
+                        error={
+                          errors.phone && {
+                            content: "Please enter a valid phone",
+                            pointing: "below",
+                          }
+                        }
+                        icon="phone square"
+                        iconPosition="left"
+                      ></Form.Input>
+                    </InputMask>
+                  )}
+                ></Controller>
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={{ required: true, pattern: emailRegExp }}
+                  render={({ field, formState }) => (
+                    <Form.Input
+                      {...field}
+                      {...formState}
+                      fluid
+                      icon="envelope outline"
+                      iconPosition="left"
+                      type="text"
+                      placeholder="E-mail"
+                      error={
+                        errors.email && {
+                          content: "Please enter a valid email address",
+                          pointing: "below",
+                        }
+                      }
+                    />
+                  )}
+                ></Controller>
+              </Segment>
+              <Button
+                fluid
+                primary
+                type="submit"
+                name="Register"
+                disabled={!isValid}
+              >
+                Proceed
+              </Button>
+            </Form>
+          </Grid.Column>
+        </Grid>
+      </Container>
     </div>
   );
 }
